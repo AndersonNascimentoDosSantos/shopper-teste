@@ -85,7 +85,7 @@ export default function GooglePlacesAutocomplete({
         onBlur={() => setTimeout(() => setOpen(false), 200)}
         onKeyDown={handleKeyDown}
         placeholder="Search address..."
-        className="w-full rounded-2xl border border-neutral-50 bg-neutral-10 p-4 focus:border-white focus:outline-none"
+        className="w-full rounded-2xl border border-b-neutral-500 bg-neutral-10 p-2 mb-2 focus:border-b-neutral-700 focus:outline-none"
       />
 
       {open && placePredictions.length > 0 && (

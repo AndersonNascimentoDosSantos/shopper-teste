@@ -1,5 +1,16 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+import {
+  GoogleMap,
+  Marker,
+  useLoadScript,
+  Libraries,
+} from "@react-google-maps/api";
 import { getAdressDecomposed } from "../utils/getAdressDecomposed";
 import GooglePlacesAutocomplete from "./AutocompletInput";
 
@@ -7,6 +18,7 @@ const mapContainerStyle = {
   width: "100%",
   height: "500px",
 };
+const libraries: Libraries = ["places", "geocoding"];
 
 const DEFAULT_CENTER = { lat: -23.5505, lng: -46.6333 }; // São Paulo
 
@@ -15,16 +27,27 @@ export interface SelectedPlace {
   location: google.maps.LatLng | undefined;
 }
 
-export const UberLikeLocationPicker = () => {
-  const [origin, setOrigin] = useState<SelectedPlace>({
-    location: undefined,
-    address: "",
-  });
+interface IUberLike {
+  selectedPlaceOrigin: SelectedPlace;
+  setSelectedPlaceOrigin: Dispatch<SetStateAction<SelectedPlace>>;
+  selectedPlaceDestin: SelectedPlace;
+  setSelectedPlaceDestin: Dispatch<SetStateAction<SelectedPlace>>;
+}
+export const UberLikeLocationPicker = ({
+  selectedPlaceDestin: destination,
+  selectedPlaceOrigin: origin,
+  setSelectedPlaceDestin: setDestination,
+  setSelectedPlaceOrigin: setOrigin,
+}: IUberLike) => {
+  // const [origin, setOrigin] = useState<SelectedPlace>({
+  //   location: undefined,
+  //   address: "",
+  // });
 
-  const [destination, setDestination] = useState<SelectedPlace>({
-    location: undefined,
-    address: "",
-  });
+  // const [destination, setDestination] = useState<SelectedPlace>({
+  //   location: undefined,
+  //   address: "",
+  // });
 
   const [userLocation, setUserLocation] = useState<google.maps.LatLng | null>(
     null
@@ -38,7 +61,7 @@ export const UberLikeLocationPicker = () => {
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY ?? "",
-    libraries: ["places", "geocoding"],
+    libraries,
   });
 
   // Improved geolocation with fallback
@@ -81,7 +104,7 @@ export const UberLikeLocationPicker = () => {
         }
       });
     }
-  }, [isLoaded, getCurrentLocation, origin.location]);
+  }, [isLoaded, getCurrentLocation, origin.location, setOrigin]);
 
   const geocodeLatLng = useCallback(
     (latLng: google.maps.LatLng) => {
@@ -105,7 +128,7 @@ export const UberLikeLocationPicker = () => {
         }
       });
     },
-    [editMode]
+    [editMode, setDestination, setOrigin]
   );
 
   if (loadError) return <div>Error loading maps</div>;
@@ -130,7 +153,7 @@ export const UberLikeLocationPicker = () => {
           <GooglePlacesAutocomplete
             placeSelected={destination}
             SetPlaceSelected={(place) => {
-              console.log("Novo destino selecionado:", place);
+              // console.log("Novo destino selecionado:", place);
               setDestination(place);
               // Atualizar o centro do mapa para o novo destino
               if (place.location) {
@@ -141,7 +164,7 @@ export const UberLikeLocationPicker = () => {
           <button
             type="button"
             onClick={() => startLocationEdit("destination")}
-            className="px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            className="px-3 py-2 bg-green-400 text-white rounded hover:bg-green-500"
           >
             Alterar destino
           </button>
@@ -155,7 +178,7 @@ export const UberLikeLocationPicker = () => {
             <button
               type="button"
               onClick={() => startLocationEdit("origin")}
-              className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              className="px-3 py-2 bg-blue-400 text-white rounded hover:bg-blue-500"
             >
               Aletar Ponto de partida
             </button>

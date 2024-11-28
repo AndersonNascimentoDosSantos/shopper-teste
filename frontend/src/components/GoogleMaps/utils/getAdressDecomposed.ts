@@ -12,8 +12,10 @@ export function getAdressDecomposed(
 ) {
   const addressInfo: AddressData = {} as AddressData;
 
+  // console.log(addressInfo);
   addressComponents?.forEach((component) => {
     const { long_name, types } = component;
+
     if (types.includes("street_number")) {
       if (long_name) addressInfo.rua = long_name;
     } else if (types.includes("route")) {
