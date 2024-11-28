@@ -1,24 +1,22 @@
-# Dockerfile
-
 FROM node:20-alpine
 
-RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
+WORKDIR /app
 
-WORKDIR /home/node/app
-
+# Copie o .env se necessário
+COPY .env .env
 
 COPY package*.json ./
+COPY prisma ./prisma/
 
-RUN npm install --verbose
+RUN npm install
+
+# Gere o Prisma Client
+RUN npx prisma generate
 
 COPY . .
 
-COPY --chown=node:node . .
+RUN npm run build
 
-RUN ls -la && \
-    cat package.json && \
-    npm run build || (echo "Build failed" && exit 1)
-    
 EXPOSE 8080
 
-CMD ["npm", "run", "start"]
+CMD ["npm", "start"]
