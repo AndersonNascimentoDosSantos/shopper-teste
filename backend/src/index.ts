@@ -7,7 +7,6 @@ import cors from "cors";
 
 import { Session } from "node:inspector/promises";
 import { writeFile } from "node:fs/promises";
-import { sign } from "node:crypto";
 
 import path from "path";
 
