@@ -35,11 +35,12 @@ services:
     build:
       context: .
       dockerfile: nginx/Dockerfile
-    container_name: projeto-nginx
+    container_name: nginx-backend
     ports:
       - "8080:80"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro # Arquivo de configuração
+      - ./nginx/cache:/var/cache/nginx
     depends_on:
       - backend
     networks:
