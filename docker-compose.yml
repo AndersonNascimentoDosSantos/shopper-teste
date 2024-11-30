@@ -5,10 +5,11 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        REACT_APP_GOOGLE_API_KEY: ${GOOGLE_API_KEY}
     env_file:
       - .env
-    environment:
-      - REACT_APP_GOOGLE_API_KEY=${DATABASE_URL}
+
     ports:
       - "80:80"
     depends_on:
